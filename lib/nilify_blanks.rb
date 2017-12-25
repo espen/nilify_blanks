@@ -9,7 +9,7 @@ module NilifyBlanks
   end
 
   module ClassMethods
-    DEFAULT_TYPES = [:string, :text, :citext]
+    DEFAULT_TYPES = [:string, :text, :citext, :hstore]
     DEFAULT_CALLBACK = :validation
 
     @@define_nilify_blank_methods_lock = Mutex.new
