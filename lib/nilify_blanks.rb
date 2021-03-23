@@ -66,7 +66,7 @@ module NilifyBlanks
   def nilify_blanks
     (nilify_blanks_columns || []).each do |column|
       value = read_attribute(column)
-      next unless value.is_a?(String) || value.is_a?(Array)
+
       if value.is_a?(String)
         next unless value.respond_to?(:blank?)
         write_attribute(column, nil) if value.blank?
@@ -75,20 +75,15 @@ module NilifyBlanks
           next unless array_value.respond_to?(:blank?)
           array_value.blank?
         }
-        if value.empty?
-          write_attribute(column, nil) if value.blank?
-        else
-          write_attribute(column, value) if value.blank?
-        elsif value.is_a?(Hash)
-          value.reject! { |hstore_key, hstore_value|
-            next unless hstore_value.respond_to?(:blank?)
-            hstore_value.blank?
-          }
-          value = nil if value.empty?
-          write_attribute(column, value) if value.blank?
-        end
-      else
-        next
+        value = nil if value.empty?
+        write_attribute(column, value) if value.blank?
+      elsif value.is_a?(Hash)
+        value.reject! { |hstore_key, hstore_value|
+          next unless hstore_value.respond_to?(:blank?)
+          hstore_value.blank?
+        }
+        value = nil if value.empty?
+        write_attribute(column, value) if value.blank?
       end
     end
   end
